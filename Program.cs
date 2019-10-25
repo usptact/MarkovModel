@@ -9,7 +9,9 @@ namespace MarkovModel
     {
         static void Main(string[] args)
         {
-            TestMarkovModel();
+            // TestMarkovModel();
+
+            TestMarkovModel2();
         }
 
         static void TestMarkovModel()
@@ -67,6 +69,15 @@ namespace MarkovModel
             Console.WriteLine();
 
             model.PrintPosteriors();
+        }
+
+        static void TestMarkovModel2()
+        {
+            MarkovModel2 model = new MarkovModel2();
+
+            var data = new int[][] { new int[] { 1, 2 }, new int[] { 10, 20, 30 } };
+
+            model.SetData(data);
         }
     }
 }

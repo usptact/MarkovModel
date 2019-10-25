@@ -213,5 +213,68 @@ namespace MarkovModel
 
             return output;
         }
-    }
+    } // MarkovModel
+
+    class MarkovModel2
+    {
+        Range outer;
+        Range inner;
+
+        Variable<int> outerSizeVar;
+        VariableArray<int> innerSizesVar;
+
+        VariableArray<VariableArray<int>, int[][]> data;
+
+        public MarkovModel2()
+        {
+            outerSizeVar = Variable.New<int>();
+            outer = new Range(outerSizeVar);
+
+            innerSizesVar = Variable.Array<int>(outer);
+            inner = new Range(innerSizesVar[outer]);
+
+            data = Variable.Array(Variable.Array<int>(inner), outer);
+
+            // data generating model
+            using (Variable.ForEach(outer))
+            {
+                using (var block = Variable.ForEach(inner))
+                {
+                    var t = block.Index;
+                    using (Variable.If(t == 0))                             // init state
+                    {
+                        data[outer][t] = Variable.DiscreteUniform(K);
+                        /*
+                        using (Variable.Switch(ZeroState))
+                        {
+                            States[t] = Variable.Discrete(ProbInit);
+                            //States[t] = Variable.DiscreteUniform(K);
+                        }
+                        */
+                    }
+
+                    using (Variable.If(t > 0))                              // transition states
+                    {
+                        using (Variable.Switch(data[outer][t - 1]))
+                        {
+                            data[outer][t] = Variable.Discrete(CPTTrans[data[outer][t - 1]]);
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        public void SetData(int[][] newData)
+        {
+            outerSizeVar.ObservedValue = newData.Length;
+
+            var innerSizes = new int[newData.Length];
+            for (int i = 0; i < newData.Length; i++)
+                innerSizes[i] = newData[i].Length;
+            innerSizesVar.ObservedValue = innerSizes;
+
+            data.ObservedValue = newData;
+        }
+    } // MarkovModel2
 }
