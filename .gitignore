@@ -1,5 +1,57 @@
+# Based on https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+## Visual Studio
 .vs/
 .vscode/
-bin/
+
+## Generated files
 GeneratedSource/
-obj/
+
+## NuGet
+*.nupkg
+.nuget/packages/
+**/packages/*
+!**/packages/build/
+*.snupkg
+
+## MSBuild binary and cache
+*.build.csdef
+*.g.*
+*.g.cs
+*.g.i.cs
+*.cache
+
+## Rider
+.idea/
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Dotnet tools
+.store/
+.tools/
+
+## Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+TestResult.xml
+TestResult.trx
+
+## Other
+_ReSharper*/
+*.resharper
+*.DotSettings.user
+.ionide/

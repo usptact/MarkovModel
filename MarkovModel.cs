@@ -5,6 +5,7 @@ using Microsoft.ML.Probabilistic.Math;
 using Microsoft.ML.Probabilistic.Distributions;
 using Microsoft.ML.Probabilistic.Algorithms;
 using Microsoft.ML.Probabilistic.Utilities;
+using Microsoft.ML.Probabilistic.Compiler;
 
 namespace MarkovModel
 {
@@ -12,8 +13,8 @@ namespace MarkovModel
     {
         private int[] StateData;
 
-        private Range K;
-        private Range T;
+        private Microsoft.ML.Probabilistic.Models.Range K;
+        private Microsoft.ML.Probabilistic.Models.Range T;
 
         // Set up the main model variables
         private Variable<int> ZeroState;
@@ -42,8 +43,8 @@ namespace MarkovModel
             ModelEvidence = Variable.Bernoulli(0.5);
             using (Variable.If(ModelEvidence))
             {
-                K = new Range(NumStates);
-                T = new Range(ChainLength);
+                K = new Microsoft.ML.Probabilistic.Models.Range(NumStates);
+                T = new Microsoft.ML.Probabilistic.Models.Range(ChainLength);
 
                 ProbInitPrior = Variable.New<Dirichlet>();                  // init state priors
                 ProbInit = Variable<Vector>.Random(ProbInitPrior);
@@ -89,6 +90,8 @@ namespace MarkovModel
         public void DefineInferenceEngine()
         {
             Engine = new InferenceEngine(new ExpectationPropagation());
+			// Force Roslyn compiler to avoid CodeDom on platforms where it's unsupported (e.g., .NET 8 on macOS)
+			Engine.Compiler.CompilerChoice = CompilerChoice.Roslyn;
             //Engine = new InferenceEngine(new VariationalMessagePassing());
             //Engine = new InferenceEngine(new GibbsSampling());
             Engine.ShowFactorGraph = false;
